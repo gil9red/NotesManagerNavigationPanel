@@ -5,12 +5,14 @@ TARGET = NotesManagerNavigationPanel
 TEMPLATE = app
 DESTDIR = ../bin
 
-include( notesmodel/notesmodel.pri )
+#include( notesmodel/notesmodel.pri )
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    hierarchicalmodel.cpp
 
 HEADERS  += mainwindow.h \
+    hierarchicalmodel.h
 
 FORMS    += mainwindow.ui
 

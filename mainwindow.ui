@@ -55,7 +55,24 @@
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="tButtonRemove">
+       <widget class="QToolButton" name="tButtonRemoveToTrash">
+        <property name="statusTip">
+         <string>Переместить в корзину</string>
+        </property>
+        <property name="text">
+         <string>Переместить в корзину</string>
+        </property>
+        <property name="icon">
+         <iconset resource="image.qrc">
+          <normaloff>:/trash</normaloff>:/trash</iconset>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="tButtonDelete">
         <property name="statusTip">
          <string>Удалить</string>
         </property>
@@ -64,7 +81,7 @@
         </property>
         <property name="icon">
          <iconset resource="image.qrc">
-          <normaloff>:/icons/edit-delete_6575.png</normaloff>:/icons/edit-delete_6575.png</iconset>
+          <normaloff>:/delete</normaloff>:/delete</iconset>
         </property>
         <property name="autoRaise">
          <bool>true</bool>
@@ -88,10 +105,25 @@
     </item>
     <item>
      <widget class="QTreeView" name="treeView">
+      <property name="dragEnabled">
+       <bool>true</bool>
+      </property>
       <property name="dragDropMode">
        <enum>QAbstractItemView::InternalMove</enum>
       </property>
+      <property name="defaultDropAction">
+       <enum>Qt::MoveAction</enum>
+      </property>
       <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="rootIsDecorated">
+       <bool>true</bool>
+      </property>
+      <property name="itemsExpandable">
+       <bool>true</bool>
+      </property>
+      <property name="animated">
        <bool>true</bool>
       </property>
       <property name="headerHidden">

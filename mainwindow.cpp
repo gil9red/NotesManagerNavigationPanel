@@ -9,28 +9,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);    
+    ui->setupUi(this);
 
-    BaseItem * f1 = new FolderItem( "f1" );
-    BaseItem * f2 = new FolderItem( "f2" );
-    BaseItem * n2 = new NoteItem( "n2" );
-    BaseItem * f3 = new FolderItem( "f3" );
-    BaseItem * n3 = new NoteItem( "n3" );
-
-    f2->append( n2 );
-    f2->insert( 0, new FolderItem( "Folder_1" ) );
-    f2->insert( 0, new FolderItem( "Folder_2" ) );
-    f2->append( new NoteItem( "Note_1" ) );
-    f2->insert( 0, new NoteItem( "Note_2" ) );
-
-    f3->append( n3 );
+    model.appendToNotes( new NoteModelItem("Заметка 1") );
+    model.appendToNotes(new NoteModelItem("Заметка 2") );
+    model.appendToNotes(new FolderModelItem("Папка 1") );
+    model.appendToNotes(new FolderModelItem("Папка 2") );
+    model.appendToTrash(new NoteModelItem("Заметка 3"));
+    model.appendToTrash(new NoteModelItem("Заметка 4"));
 
     ui->treeView->setModel( &model );
-    model.children.append( f1 );
-    model.children.append( f2 );
-    model.children.append( f3 );
-
-    ui->treeView->expandAll();
 
     QSettings ini( qApp->applicationDirPath()+"/ini.ini", QSettings::IniFormat );
     //ui->splitter->restoreState( ini.value( ui->splitter->objectName() ).toByteArray() );
@@ -55,13 +43,27 @@ void MainWindow::closeEvent(QCloseEvent *)
 
 void MainWindow::on_tButtonAddFolder_clicked()
 {
+    const QModelIndex & index = ui->treeView->currentIndex();
+    model.itemFromIndex( index )->appendRow( new FolderModelItem( "Новая папка" ) );
 }
 void MainWindow::on_tButtonAddNote_clicked()
 {
+    const QModelIndex & index = ui->treeView->currentIndex();
+    model.itemFromIndex( index )->appendRow( new NoteModelItem( "Новая заметка" ) );
 }
-void MainWindow::on_tButtonRemove_clicked()
+void MainWindow::on_tButtonRemoveToTrash_clicked()
 {
+
 }
+void MainWindow::on_tButtonDelete_clicked()
+{
+
+}
+void MainWindow::on_treeView_clicked(const QModelIndex &index)
+{
+    updateStates();
+}
+
 void MainWindow::updateStates()
 {
     if ( !ui->treeView->currentIndex().isValid() )
@@ -71,17 +73,12 @@ void MainWindow::updateStates()
         return;
     }
 
-    BaseItem::Type type = model.item( ui->treeView->currentIndex() )->type();
+    BaseModelItem::Type type = model.typeItem( ui->treeView->currentIndex() );
+    qDebug() << type;
 
-    bool currentIsFolder = ( type == BaseItem::FOLDER );
-    bool currentIsNote = ( type == BaseItem::NOTE );
+    bool currentIsFolder = ( type == BaseModelItem::FOLDER );
+    bool currentIsNote = ( type == BaseModelItem::NOTE );
 
     ui->tButtonAddFolder->setEnabled( currentIsFolder && !currentIsNote );
     ui->tButtonAddNote->setEnabled( currentIsFolder && !currentIsNote );
-}
-
-void MainWindow::on_treeView_clicked(const QModelIndex &index)
-{
-    qDebug() << model.item( index )->type();
-    updateStates();
 }
