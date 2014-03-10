@@ -9,10 +9,12 @@ DESTDIR = ../bin
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    hierarchicalmodel.cpp
+    hierarchicalmodel.cpp \
+    hierarchicalview.cpp
 
 HEADERS  += mainwindow.h \
-    hierarchicalmodel.h
+    hierarchicalmodel.h \
+    hierarchicalview.h
 
 FORMS    += mainwindow.ui
 

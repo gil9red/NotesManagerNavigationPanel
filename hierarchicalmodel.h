@@ -6,16 +6,19 @@
 class BaseModelItem: public QStandardItem
 {
 public:
-    enum Type { BASE, NOTE, FOLDER };
+    enum Type { BASE, NOTE, FOLDER, TRASH, ALL_NOTES, ERROR = -1, ROLE_TYPE = Qt::UserRole };
 
 public:
     explicit BaseModelItem( const QString & text = QString() )
         : QStandardItem( text )
     {
+        setType( BASE );
         setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     }
     virtual ~BaseModelItem() {}
-    virtual int type() { return BASE; }
+
+    virtual int type() { return data( ROLE_TYPE ).toInt(); }
+    virtual void setType(Type t) { setData( t, ROLE_TYPE ); }
 };
 
 class NoteModelItem: public BaseModelItem
@@ -25,11 +28,11 @@ public:
         : BaseModelItem( text )
     {
         setIcon( QIcon( ":/note" ) );
+        setType( NOTE );
 
         setDragEnabled( true );
         setEditable( true );
     }
-    virtual int type() { return NOTE; }
 };
 
 class FolderModelItem: public BaseModelItem
@@ -39,12 +42,12 @@ public:
         : BaseModelItem( text )
     {
         setIcon( QIcon( ":/folder" ) );
+        setType( FOLDER );
 
         setDropEnabled( true );
         setDragEnabled( true );
         setEditable( true );
     }
-    virtual int type() { return FOLDER; }
 };
 
 
@@ -56,13 +59,13 @@ public:
     explicit HierarchicalModel( QObject * parent = 0 );
 
     void appendToNotes( BaseModelItem * item );
-    bool removeOfNotes( BaseModelItem * item );
     void appendToTrash( BaseModelItem * item );
     bool removeOfTrash( BaseModelItem * item );
+    void clearTrash();
 
     BaseModelItem::Type typeItem( const QModelIndex & index );
 
-    BaseModelItem * itemNotes;
+    //BaseModelItem * itemNotes;
     BaseModelItem * itemTrash;
 };
 

@@ -1,28 +1,23 @@
 #include "hierarchicalmodel.h"
 
-int indexChild( QStandardItem * item )
+#include <QDebug>
+
+int indexChild( QStandardItem * parent, QStandardItem * child  )
 {
-    for ( int i = 0; i < item->rowCount(); i++ )
-        if ( item->child(i) == item )
+    for ( int i = 0; i < parent->rowCount(); i++ )
+        if ( parent->child(i) == child )
             return i;
     return -1;
 }
 
 HierarchicalModel::HierarchicalModel( QObject * parent )
     : QStandardItemModel( parent ),
-      itemNotes( new BaseModelItem() ),
       itemTrash( new BaseModelItem() )
 {
     QFont font( BaseModelItem().font() );
     font.setBold( true );
 
-    itemNotes->setIcon( QIcon( ":/notes" ) );
-    itemNotes->setText( tr( "Заметки" ) );
-    itemNotes->setDragEnabled( false );
-    itemNotes->setDropEnabled( true );
-    itemNotes->setEditable( false );
-    itemNotes->setFont( font );
-
+    itemTrash->setType( BaseModelItem::TRASH );
     itemTrash->setIcon( QIcon( ":/trash" ) );
     itemTrash->setText( tr( "Корзина" ) );
     itemTrash->setDragEnabled( false );
@@ -31,32 +26,39 @@ HierarchicalModel::HierarchicalModel( QObject * parent )
     itemTrash->setFont( font );
 
     clear();
-    appendRow( itemNotes );
     appendRow( itemTrash );
 }
 
 void HierarchicalModel::appendToNotes( BaseModelItem * item )
 {
-    itemNotes->appendRow( item );
-}
-bool HierarchicalModel::removeOfNotes( BaseModelItem * item )
-{
-    int index = indexChild( item );
-    if ( index != -1 )
-    {
-        itemNotes->removeRow( index );
-        return true;
-    }
-
-    return false;
+    appendRow( item );
 }
 void HierarchicalModel::appendToTrash( BaseModelItem * item )
 {
-    itemTrash->appendRow( item );
+    QStandardItem * removedItem = item;
+    // Если есть родитель - тогда это под элемент
+    // иначе - элемент верхнего уровня
+    if ( removedItem->parent() )
+    {
+        int row = removedItem->row();
+        removedItem = removedItem->parent()->takeChild( row );
+        removedItem->parent()->removeRow( row );
+    } else
+    {
+        const QModelIndex & index = indexFromItem( removedItem );
+        if ( index.isValid() )
+        {
+            int row = index.row();
+            removedItem = takeItem( removedItem->row() );
+            removeRow( row );
+        }
+    }
+
+    itemTrash->appendRow( removedItem );
 }
 bool HierarchicalModel::removeOfTrash( BaseModelItem * item )
-{
-    int index = indexChild( item );
+{    
+    int index = indexChild( itemTrash, item );
     if ( index != -1 )
     {
         itemTrash->removeRow( index );
@@ -65,8 +67,20 @@ bool HierarchicalModel::removeOfTrash( BaseModelItem * item )
 
     return false;
 }
+void HierarchicalModel::clearTrash()
+{
+    while ( itemTrash->rowCount() )
+        itemTrash->removeRow( itemTrash->rowCount() - 1 );
+}
 
 BaseModelItem::Type HierarchicalModel::typeItem( const QModelIndex & index )
 {
-    return ( BaseModelItem::Type ) static_cast < BaseModelItem * > ( itemFromIndex( index ) )->type();
+    if ( !index.isValid() )
+        return BaseModelItem::ERROR;
+
+    BaseModelItem * item = static_cast < BaseModelItem * > ( itemFromIndex( index ) );
+    if ( !item )
+        return BaseModelItem::ERROR;
+
+    return ( BaseModelItem::Type ) item->type();
 }

@@ -7,7 +7,7 @@ namespace Ui {
     class MainWindow;
 }
 
-#include "hierarchicalmodel.h"
+#include "hierarchicalview.h"
 
 class MainWindow: public QMainWindow
 {
@@ -18,20 +18,10 @@ public:
     ~MainWindow();
     
 private:
-    Ui::MainWindow * ui;
-    HierarchicalModel model;
+    Ui::MainWindow * ui;    
 
 protected:
     void closeEvent(QCloseEvent *);
-
-private slots:
-    void on_tButtonAddFolder_clicked();
-    void on_tButtonAddNote_clicked();
-    void on_tButtonRemoveToTrash_clicked();
-    void on_tButtonDelete_clicked();
-    void on_treeView_clicked(const QModelIndex &index);
-
-    void updateStates();
 };
 
 #endif // MAINWINDOW_H
