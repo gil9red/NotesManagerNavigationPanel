@@ -8,6 +8,8 @@ HierarchicalView::HierarchicalView( QWidget * parent )
 {
     setModel( &model );
     setContextMenuPolicy( Qt::DefaultContextMenu );
+
+    connect( this, SIGNAL( doubleClicked(QModelIndex) ), SLOT( open() ) );
 }
 
 void HierarchicalView::addTopLevelNote()
@@ -34,7 +36,8 @@ void HierarchicalView::rename()
 }
 void HierarchicalView::open()
 {
-
+    BaseModelItem * item = static_cast < BaseModelItem * > ( model.itemFromIndex( currentIndex() ) );
+    emit itemAboutOpen( item );
 }
 void HierarchicalView::removeToTrash()
 {
@@ -93,10 +96,10 @@ void HierarchicalView::contextMenuEvent( QContextMenuEvent * event )
     BaseModelItem * itemTrash = model.itemTrash;
     BaseModelItem * currentItem = static_cast < BaseModelItem * > ( model.itemFromIndex( index ) );
 
-    bool isFolder = ( type == BaseModelItem::FOLDER );
-    bool isNote = ( type == BaseModelItem::NOTE );
-    bool isTrash = ( type == BaseModelItem::TRASH );
-    bool isEmptyTrash = ( itemTrash->rowCount() == 0 );
+    bool isFolder = currentItem->isFolder();
+    bool isNote = currentItem->isNote();
+    bool isTrash = currentItem->isTrash();
+    bool isEmptyTrash = itemTrash->isEmpty();
     bool isChildTrash = false;
     if ( currentItem->parent() )
         isChildTrash = ( currentItem->parent() == itemTrash );

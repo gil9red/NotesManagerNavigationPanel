@@ -14,6 +14,8 @@ HierarchicalModel::HierarchicalModel( QObject * parent )
     : QStandardItemModel( parent ),
       itemTrash( new BaseModelItem() )
 {
+    setHorizontalHeaderLabels( QStringList() << tr( "Notes Manager" ) );
+
     QFont font( BaseModelItem().font() );
     font.setBold( true );
 
@@ -25,7 +27,6 @@ HierarchicalModel::HierarchicalModel( QObject * parent )
     itemTrash->setEditable( false );
     itemTrash->setFont( font );
 
-    clear();
     appendRow( itemTrash );
 }
 

@@ -31,6 +31,9 @@ public slots:
     void backColor();
     void defaultBackColor();
 
+signals:
+    void itemAboutOpen( BaseModelItem * );
+
 protected:
     void contextMenuEvent( QContextMenuEvent * event );
 };

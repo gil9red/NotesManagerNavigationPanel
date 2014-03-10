@@ -2,11 +2,13 @@
 #define HIERARCHICALMODEL_H
 
 #include <QStandardItemModel>
+#include <QDomNode>
 
 class BaseModelItem: public QStandardItem
 {
 public:
-    enum Type { BASE, NOTE, FOLDER, TRASH, ALL_NOTES, ERROR = -1, ROLE_TYPE = Qt::UserRole };
+    enum Type { BASE, NOTE, FOLDER, TRASH, ERROR = -1,
+                ROLE_TYPE = Qt::UserRole };
 
 public:
     explicit BaseModelItem( const QString & text = QString() )
@@ -17,8 +19,16 @@ public:
     }
     virtual ~BaseModelItem() {}
 
+    bool isEmpty() { return rowCount() == 0; }
+
+    bool isNote() { return type() == NOTE; }
+    bool isFolder() { return type() == FOLDER; }
+    bool isTrash() { return type() == TRASH; }
+
     virtual int type() { return data( ROLE_TYPE ).toInt(); }
     virtual void setType(Type t) { setData( t, ROLE_TYPE ); }
+
+    QDomElement d_node;
 };
 
 class NoteModelItem: public BaseModelItem
@@ -65,7 +75,6 @@ public:
 
     BaseModelItem::Type typeItem( const QModelIndex & index );
 
-    //BaseModelItem * itemNotes;
     BaseModelItem * itemTrash;
 };
 

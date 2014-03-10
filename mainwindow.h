@@ -8,6 +8,7 @@ namespace Ui {
 }
 
 #include "hierarchicalview.h"
+#include "noteeditor.h"
 
 class MainWindow: public QMainWindow
 {
@@ -19,6 +20,10 @@ public:
     
 private:
     Ui::MainWindow * ui;    
+
+public slots:
+    void openItem( BaseModelItem * item );
+    void closeItem( int index );
 
 protected:
     void closeEvent(QCloseEvent *);
