@@ -9,17 +9,10 @@ include( NavigationPanel/NavigationPanel.pri )
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-#    hierarchicalmodel.cpp \
-#    hierarchicalview.cpp \
     noteeditor.cpp
 
 HEADERS  += mainwindow.h \
-#    hierarchicalmodel.h \
-#    hierarchicalview.h \
     noteeditor.h
 
 FORMS    += mainwindow.ui \
     noteeditor.ui
-
-RESOURCES += \
-    image.qrc
