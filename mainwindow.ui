@@ -78,7 +78,7 @@
   <customwidget>
    <class>HierarchicalView</class>
    <extends>QTreeView</extends>
-   <header>hierarchicalview.h</header>
+   <header>NavigationPanel/hierarchicalview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

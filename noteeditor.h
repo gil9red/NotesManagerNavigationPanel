@@ -6,7 +6,7 @@
 namespace Ui {
     class NoteEditor;
 }
-#include "hierarchicalmodel.h"
+#include "NavigationPanel/hierarchicalmodel.h"
 #include "ui_noteeditor.h"
 
 class NoteEditor : public QMainWindow

@@ -34,7 +34,7 @@ public slots:
 signals:
     void itemAboutOpen( BaseModelItem * );
 
-protected:
+protected:    
     void contextMenuEvent( QContextMenuEvent * event );
 };
 

@@ -9,7 +9,7 @@ HierarchicalView::HierarchicalView( QWidget * parent )
     setModel( &model );
     setContextMenuPolicy( Qt::DefaultContextMenu );
 
-    connect( this, SIGNAL( doubleClicked(QModelIndex) ), SLOT( open() ) );
+    connect( this, SIGNAL( doubleClicked( QModelIndex ) ), SLOT( open() ) );
 }
 
 void HierarchicalView::addTopLevelNote()
@@ -66,7 +66,7 @@ void HierarchicalView::defaultTextColor()
 {
     const QModelIndex & index = currentIndex();
     QStandardItem * currentItem = model.itemFromIndex( index );
-    currentItem->setForeground( QBrush() );
+    currentItem->setForeground( Qt::black );
 }
 void HierarchicalView::backColor()
 {
@@ -80,7 +80,7 @@ void HierarchicalView::defaultBackColor()
 {
     const QModelIndex & index = currentIndex();
     QStandardItem * currentItem = model.itemFromIndex( index );
-    currentItem->setBackground( QBrush() );
+    currentItem->setBackground( Qt::white );
 }
 
 void HierarchicalView::contextMenuEvent( QContextMenuEvent * event )
@@ -89,12 +89,8 @@ void HierarchicalView::contextMenuEvent( QContextMenuEvent * event )
     if ( !index.isValid() )
         return;
 
-    BaseModelItem::Type type = model.typeItem( index );
-    if ( type == BaseModelItem::ERROR )
-        return;
-
-    BaseModelItem * itemTrash = model.itemTrash;
     BaseModelItem * currentItem = static_cast < BaseModelItem * > ( model.itemFromIndex( index ) );
+    BaseModelItem * itemTrash = model.itemTrash;
 
     bool isFolder = currentItem->isFolder();
     bool isNote = currentItem->isNote();
@@ -116,13 +112,13 @@ void HierarchicalView::contextMenuEvent( QContextMenuEvent * event )
         menu.addAction( QIcon( ":/add_note" ), tr( "Добавить заметку" ), this, SLOT( addNote() ), QKeySequence( "" ) );
     }
 
-    if ( !isTrash )
+    if ( isNote || isFolder )
         menu.addAction( QIcon( "" ), tr( "Переименовать" ), this, SLOT( rename() ), QKeySequence( "" ) );
 
     if ( isNote )
         menu.addAction( QIcon( "" ), tr( "Открыть" ), this, SLOT( open() ), QKeySequence( "" ) );
 
-    if ( !isTrash && !isChildTrash )
+    if ( (isNote || isFolder) && !isChildTrash )
         menu.addAction( QIcon( ":/trash" ), tr( "Переместить в корзину" ), this, SLOT( removeToTrash() ), QKeySequence( "" ) );
 
     if ( isChildTrash )
@@ -133,7 +129,7 @@ void HierarchicalView::contextMenuEvent( QContextMenuEvent * event )
 
     menu.addSeparator();
 
-    if ( !isTrash )
+    if ( isNote || isFolder )
     {
         QMenu * menuTextColor = menu.addMenu( QIcon( "" ), tr( "Изменить цвет текста" ) );
         menuTextColor->addAction( QIcon( "" ), tr( "Цвет по умолчанию" ), this, SLOT( defaultTextColor() ), QKeySequence( "" ) );

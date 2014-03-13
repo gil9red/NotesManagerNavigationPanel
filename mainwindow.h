@@ -7,7 +7,7 @@ namespace Ui {
     class MainWindow;
 }
 
-#include "hierarchicalview.h"
+#include "NavigationPanel/hierarchicalview.h"
 #include "noteeditor.h"
 
 class MainWindow: public QMainWindow
